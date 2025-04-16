@@ -1,0 +1,28 @@
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  BASE_URL: ''
+  TOKEN: ''
+  LIMIT_TIME_DURATION: 2000
+  VUS: 300
+  DURATION: 5m
+
+steps:
+- task: NodeTool@0
+  inputs:
+    version: '16.x'
+
+- script: |
+    echo "Installing K6"
+    sudo snap install k6
+  displayName: "Install K6"
+
+- script: |
+    echo "Running Load Tests with K6"
+    k6 run index.js --vus $(VUS) --duration $(DURATION)
+  displayName: "Run K6 Tests"
+  env:
+    BASE_URL: $(BASE_URL)
+    TOKEN: $(TOKEN)
+    LIMIT_TIME_DURATION: $(LIMIT_TIME_DURATION)
